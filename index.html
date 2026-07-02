@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHO Coffee - POS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body, input, button {
+            font-family: 'Inter', sans-serif !important;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#f5f5f4] h-screen overflow-hidden flex flex-col text-stone-800 selection:bg-[#e7e5e4]">
+
+    <header class="bg-white border-b border-[#e7e5e4] px-4 flex justify-between items-center gap-4 shrink-0 h-16 z-20 relative">
+        
+        <div class="flex items-center gap-2 h-full">
+            <div class="relative align-top self-start z-30">
+                <img src="images/logo.jpeg" class="w-[160px] block select-none translate-y-[5px] translate-x-[-10px]">
+            </div>
+            <h1 class="text-3xl font-black text-[#451a03] tracking-tight uppercase translate-x-[10px]">
+                POS <span class="text-[#78350f] font-medium text-xs block tracking-widest -mt-0.5">Point of Sale</span>
+            </h1>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4">
+            
+            <div class="flex items-center gap-1 bg-[#f5f5f4] p-1 rounded-xl border border-[#e7e5e4]">
+                <button class="w-9 h-9 rounded-lg bg-[#78350f] text-white flex items-center justify-center text-lg shadow-sm cursor-pointer" title="Menu">
+                    <i class="bi bi-cup-hot"></i>
+                </button>
+                <button class="w-9 h-9 rounded-lg text-stone-500 hover:bg-[#e7e5e4] hover:text-[#78350f] flex items-center justify-center text-lg transition-all cursor-pointer" title="Riwayat">
+                    <i class="bi bi-clock-history"></i>
+                </button>
+                <button class="w-9 h-9 rounded-lg text-stone-500 hover:bg-[#e7e5e4] hover:text-[#78350f] flex items-center justify-center text-lg transition-all cursor-pointer" title="Pengaturan">
+                    <i class="bi bi-gear"></i>
+                </button>
+            </div>
+            <div class="relative w-40 sm:w-64">
+                <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+                <input type="text" id="search-bar" placeholder="Cari menu..." class="w-full pl-9 pr-3 py-1.5 bg-[#f5f5f4] border border-transparent rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:bg-white focus:border-[#78350f] focus:outline-none transition-all">
+            </div>
+
+            <div class="h-8 w-[1px] bg-[#e7e5e4] hidden sm:block"></div>
+
+            <div class="flex items-center gap-2.5">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-extrabold text-stone-800 leading-none">Budi Santoso</p>
+                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Kasir Utama</span>
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-[#fff7ed] border border-[#e7e5e4] overflow-hidden flex items-center justify-center text-[#78350f] shrink-0 shadow-inner">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Foto Kasir" class="w-full h-full object-cover hidden" onerror="$(this).hide().prev().show();">
+                    <i class="bi bi-person-fill text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
+        
+        <div class="flex-1 flex flex-col h-[60vh] lg:h-full overflow-hidden bg-[#fafaf9]">
+            
+             <script src="https://unpkg.com/lucide@latest"></script>
+
+            <div class="p-4 bg-white border-b border-[#e7e5e4] shrink-0 pl-[190px]">
+              <div class="grid grid-cols-4 gap-3 max-w-[420px] ml-0 w-full">
+                <button class="category-btn active p-2 aspect-square bg-[#78350f] text-white rounded-xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all cursor-pointer shadow-sm w-full" data-category="all">
+                    <i class="w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10" data-lucide="layout-grid"></i>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wide">Semua</span>
+                </button>
+
+                <button class="category-btn p-2 aspect-square bg-[#f5f5f4] text-stone-600 hover:bg-[#78350f] hover:text-white rounded-xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all cursor-pointer w-full" data-category="makanan">
+                    <i class="w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10" data-lucide="utensils"></i>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wide">Makanan</span>
+                </button>
+
+                <button class="category-btn p-2 aspect-square bg-[#f5f5f4] text-stone-600 hover:bg-[#78350f] hover:text-white rounded-xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all cursor-pointer w-full" data-category="minuman">
+                    <i class="w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10" data-lucide="cup-soda"></i>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wide">Minuman</span>
+                </button>
+
+                <button class="category-btn p-2 aspect-square bg-[#f5f5f4] text-stone-600 hover:bg-[#78350f] hover:text-white rounded-xl flex flex-col items-center justify-center gap-1 sm:gap-2 transition-all cursor-pointer w-full" data-category="snack">
+                    <i class="w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10" data-lucide="cookie"></i>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wide">Cemilan</span>
+                </button>
+                
+            </div>
+            </div>
+
+
+            <!-- Grid Produk (Kembali mepet dari ujung kiri layar) -->
+            <main class="flex-1 overflow-y-auto p-4">
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                     <!-- Diisi otomatis oleh JavaScript -->
+                </div>
+            </main>
+        </div>
+
+        <!-- KERANJANG / DETAIL ORDER -->
+        <div class="h-[40vh] lg:h-full w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-[#e7e5e4] flex flex-col justify-between shadow-xl shrink-0 z-10">
+            <div class="px-4 py-3 border-b border-[#e7e5e4] flex justify-between items-center shrink-0 bg-[#fbfbfa]">
+                <div class="flex items-center gap-1.5">
+                    <i class="bi bi-bag-check-fill text-base text-[#78350f]"></i>
+                    <h2 class="font-black text-sm text-stone-800 uppercase tracking-wider">Detail Order</h2>
+                </div>
+                <button id="clear-cart" class="text-xs text-red-500 hover:text-red-600 font-extrabold uppercase tracking-wider cursor-pointer">Clear</button>
+            </div>
+
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-[#fafaf9]">
+                <div id="cart-empty" class="text-center text-stone-400 my-auto py-6">
+                    <i class="bi bi-cart-x text-4xl block mb-2 text-stone-300"></i>
+                    <span class="text-sm font-bold tracking-wider block">Belum ada pesanan</span>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-[#e7e5e4] bg-[#fbfbfa] flex flex-col gap-3 shrink-0">
+                <div class="flex justify-between items-center text-xs sm:text-sm text-stone-500 px-0.5">
+                    <div>Subtotal: <span id="cart-subtotal" class="font-bold text-stone-800">0</span></div>
+                    <div>Pajak (10%): <span id="cart-tax" class="font-bold text-stone-800">0</span></div>
+                </div>
+                
+                <div class="flex items-center justify-between gap-4 border-t border-[#e7e5e4] pt-3">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-stone-400 uppercase font-bold tracking-wider">Total Tagihan</span>
+                        <span id="cart-total" class="text-xl font-black text-[#451a03] tracking-tight">0</span>
+                    </div>
+                    
+                    <button id="btn-pay" class="flex-1 bg-[#78350f] hover:bg-[#5c2505] active:scale-[0.98] text-white py-3 px-4 rounded-xl text-sm font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="bi bi-wallet2 text-base"></i> Bayar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+   <script>
+    // 1. Array produk disesuaikan dengan nama icon Lucide resmi
+    const products = [
+        { id: 1, name: "Espresso Double Shot", price: 18000, category: "minuman", icon: "cup-soda" },
+        { id: 2, name: "Premium Cafe Latte", price: 26000, category: "minuman", icon: "coffee" },
+        { id: 4, name: "Mie Goreng Rempah", price: 32000, category: "makanan", icon: "flame" },
+        { id: 5, name: "Truffle Fries", price: 24000, category: "snack", icon: "container" },
+        { id: 6, name: "Butter Croissant XL", price: 28000, category: "snack", icon: "cake" },
+        { id: 7, name: "Ceremonial Matcha Latte", price: 29000, category: "minuman", icon: "soup" },
+        { id: 8, name: "Ayam Bakar Madu", price: 38000, category: "makanan", icon: "drumstick" }
+    ];
+
+    let cart = [];
+
+    $(document).ready(function() {
+        renderProducts(products);
+
+        // Filter Kategori Menu
+        $('.category-btn').on('click', function() {
+            $('.category-btn').removeClass('active bg-[#78350f] text-white shadow-sm').addClass('bg-[#f5f5f4] text-stone-600');
+            $(this).addClass('active bg-[#78350f] text-white shadow-sm').removeClass('bg-[#f5f5f4] text-stone-600');
+            filterMenu();
+        });
+
+        // Live Search
+        $('#search-bar').on('input', function() {
+            filterMenu();
+        });
+
+        // Tambah Item ke Keranjang
+        $(document).on('click', '.product-card', function() {
+            const id = $(this).data('id');
+            const product = products.find(p => p.id === id);
+            
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCart();
+        });
+
+        // Tambah Qty Item (+)
+        $(document).on('click', '.btn-plus', function() {
+            const id = $(this).data('id');
+            cart.find(item => item.id === id).qty++;
+            updateCart();
+        });
+
+        // Kurang Qty Item (-)
+        $(document).on('click', '.btn-minus', function() {
+            const id = $(this).data('id');
+            const item = cart.find(item => item.id === id);
+            if (item.qty > 1) {
+                item.qty--;
+            } else {
+                cart = cart.filter(i => i.id !== id);
+            }
+            updateCart();
+        });
+
+        // Clear Cart
+        $('#clear-cart').on('click', function() {
+            cart = [];
+            updateCart();
+        });
+
+        // Bayar
+        $('#btn-pay').on('click', function() {
+            if (cart.length === 0) {
+                alert('Keranjang belanja Anda masih kosong!');
+                return;
+            }
+            alert('Transaksi Berhasil! Struk pesanan sedang dicetak.');
+            cart = [];
+            updateCart();
+        });
+    });
+
+    // Core Render Fungsi Grid Menu
+    function renderProducts(data) {
+        const grid = $('#product-grid');
+        grid.empty();
+        
+        if (data.length === 0) {
+            grid.html('<p class="text-stone-400 col-span-full text-center text-sm font-bold py-6 uppercase tracking-wide">Tidak ditemukan.</p>');
+            return;
+        }
+
+        data.forEach(p => {
+            grid.append(`
+                <div class="product-card bg-white rounded-2xl border border-[#e7e5e4] hover:border-[#78350f]/50 flex flex-col justify-between transition-all duration-150 group active:scale-95 cursor-pointer lg:aspect-square w-full overflow-hidden" data-id="${p.id}">
+                    
+                    <div class="p-4 sm:p-5 flex flex-col justify-center items-center gap-3 text-center flex-1 w-full">
+                        
+                        <div class="text-[#78350f] group-hover:text-[#5c2505] flex items-center justify-center shrink-0 transition-all">
+                            <i class="w-8 h-8 lg:w-16 lg:h-16" data-lucide="${p.icon}"></i>
+                        </div>
+                        
+                        <div class="w-full min-w-0 px-1">
+                            <h3 class="font-black font-lg text-stone-700 text-lg sm:text-base tracking-tight leading-none group-hover:text-[#78350f] transition-colors break-words">
+                                ${p.name}
+                            </h3>
+                        </div>
+
+                    </div>
+                    
+                    <div class="w-full bg-gray-80 border-t-1 border-stone-200 text-[#78350f] py-2.5 sm:py-3 text-center group-hover:bg-[#f7e2d7] transition-colors shrink-0">
+                        <span class="text-sm sm:text-base lg:text-2xl font-black tracking-wide block">
+                            ${p.price.toLocaleString('id-ID')}
+                        </span>
+                    </div>
+
+                </div>
+            `);
+        });
+
+        // CRITICAL PERBAIKAN: Panggil ulang lucide setelah elemen selesai di-inject ke DOM
+        lucide.createIcons();
+    }
+
+    // Filter Handler
+    function filterMenu() {
+        const activeCategory = $('.category-btn.active').data('category');
+        const searchKeyword = $('#search-bar').val().toLowerCase();
+
+        let filtered = products;
+
+        if (activeCategory !== 'all') {
+            filtered = filtered.filter(p => p.category === activeCategory);
+        }
+
+        if (searchKeyword) {
+            filtered = filtered.filter(p => p.name.toLowerCase().includes(searchKeyword));
+        }
+
+        renderProducts(filtered);
+    }
+
+    // Update Keranjang
+    function updateCart() {
+        const container = $('#cart-items');
+        container.find('.cart-item').remove();
+
+        if (cart.length === 0) {
+            $('#cart-empty').removeClass('hidden');
+            $('#cart-subtotal').text('0');
+            $('#cart-tax').text('0');
+            $('#cart-total').text('0');
+            return;
+        }
+
+        $('#cart-empty').addClass('hidden');
+        let subtotal = 0;
+
+        cart.forEach(item => {
+            let itemTotal = item.price * item.qty;
+            subtotal += itemTotal;
+
+            container.append(`
+                <div class="cart-item bg-white p-3 rounded-xl flex items-stretch justify-between gap-3 border border-[#e7e5e4] shadow-sm">
+                    
+                    <div class="flex-1 min-w-0 flex flex-col justify-end gap-1.5">
+                        <h4 class="font-medium text-sm text-stone-700 tracking-tight leading-none break-words">${item.name}</h4>
+                        
+                        <div class="inline-flex self-start bg-[#f5f5f4] border border-[#e7e5e4] px-2 py-0.5 rounded-md">
+                            <span class="text-xs text-[#78350f] font-black">${item.price.toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 bg-[#f5f5f4] rounded-lg border border-[#e7e5e4] p-1 shrink-0 self-center">
+                        <button class="btn-minus w-7 h-7 rounded-md text-sm hover:bg-[#e7e5e4] text-stone-600 font-bold transition-colors cursor-pointer flex items-center justify-center" data-id="${item.id}">-</button>
+                        <span class="text-sm font-black px-1 text-stone-800 min-w-5 text-center">${item.qty}</span>
+                        <button class="btn-plus w-7 h-7 rounded-md text-sm hover:bg-[#e7e5e4] text-stone-600 font-bold transition-colors cursor-pointer flex items-center justify-center" data-id="${item.id}">+</button>
+                    </div>
+
+                </div>
+            `);
+        });
+
+        let tax = subtotal * 0.1;
+        let total = subtotal + tax;
+
+        $('#cart-subtotal').text(`${subtotal.toLocaleString('id-ID')}`);
+        $('#cart-tax').text(`${tax.toLocaleString('id-ID')}`);
+        $('#cart-total').text(`${total.toLocaleString('id-ID')}`);
+    }
+</script>
+</body>
+</html>
