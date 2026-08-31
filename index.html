@@ -39,7 +39,7 @@
                 <button class="w-9 h-9 rounded-lg text-stone-500 hover:bg-[#e7e5e4] hover:text-[#78350f] flex items-center justify-center text-lg transition-all cursor-pointer" title="Riwayat">
                     <i class="bi bi-clock-history"></i>
                 </button>
-                <button class="w-9 h-9 rounded-lg text-stone-500 hover:bg-[#e7e5e4] hover:text-[#78350f] flex items-center justify-center text-lg transition-all cursor-pointer" title="Pengaturan">
+                <button onclick="requestSelectBluetoothPrinter()" class="w-9 h-9 rounded-lg text-stone-500 hover:bg-[#e7e5e4] hover:text-[#78350f] flex items-center justify-center text-lg transition-all cursor-pointer" title="Pengaturan">
                     <i class="bi bi-gear"></i>
                 </button>
             </div>
@@ -67,7 +67,7 @@
         
         <div class="flex-1 flex flex-col h-[60vh] lg:h-full overflow-hidden bg-[#fafaf9]">
             
-             <script src="https://unpkg.com/lucide@latest"></script>
+            <script src="https://unpkg.com/lucide@latest"></script>
 
             <div class="p-4 bg-white border-b border-[#e7e5e4] shrink-0 pl-[190px]">
               <div class="grid grid-cols-4 gap-3 max-w-[420px] ml-0 w-full">
@@ -329,6 +329,95 @@
         $('#cart-tax').text(`${tax.toLocaleString('id-ID')}`);
         $('#cart-total').text(`${total.toLocaleString('id-ID')}`);
     }
+
+    function handlePrintOrder(selectedItems, orderNumber, wifiPassword) {
+    // 1. Buat elemen gambar logo (misal dari URL asset logo kafe Anda)
+    const logoImg = new Image();
+    logoImg.crossOrigin = "Anonymous";
+    logoImg.src = "https://anchatopia.github.io/echo-pos/images/eppos.png";
+    
+    logoImg.onload = function() {
+        // Konversi logo ke Base64 dengan lebar 384 dot (standar 58mm)
+        const canvas = document.createElement("canvas");
+        canvas.width = 384;
+        const ctx = canvas.getContext("2d");
+        canvas.height = (logoImg.naturalHeight / logoImg.naturalWidth) * canvas.width;
+        ctx.drawImage(logoImg, 0, 0, canvas.width, canvas.height);
+        const base64Logo = canvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
+
+        // Kirim proses cetak setelah logo siap
+        executeBridgePrint(selectedItems, orderNumber, wifiPassword, base64Logo);
+    };
+
+    // Fallback jika logo gagal dimuat, tetap cetak teksnya saja
+    logoImg.onerror = function() {
+        executeBridgePrint(selectedItems, orderNumber, wifiPassword, "");
+    };
+}
+
+function executeBridgePrint(items, orderNo, wifiPass, logoBase64) {
+    const dateStr = new Date().toLocaleString('id-ID');
+    
+    // Perintah format teks ESC/POS sederhana menggunakan spasi/baris baru (\n)
+    let text = "";
+    text += "       ECHO COFFEE SHOP       \n";
+    text += "   Jl. Malioboro No. 123, Jogja  \n";
+    text += "--------------------------------\n";
+    text += `No. Pesanan : #${orderNo}\n`;
+    text += `Tanggal     : ${dateStr}\n`;
+    text += "--------------------------------\n";
+    text += "RINCIAN PESANAN:\n";
+
+    let grandTotal = 0;
+    items.forEach(item => {
+        let subtotal = item.qty * item.price;
+        grandTotal += subtotal;
+        
+        // Format baris menu dan harga agar rapi di kertas 58mm (32 karakter per baris)
+        text += `${item.name}\n`;
+        text += `  ${item.qty}x @${item.price.toLocaleString()} = Rp ${subtotal.toLocaleString()}\n`;
+    });
+
+    text += "--------------------------------\n";
+    text += `GRAND TOTAL : Rp ${grandTotal.toLocaleString()}\n`;
+    text += "--------------------------------\n";
+    text += "     TERIMA KASIH ATAS      \n";
+    text += "     KUNJUNGAN ANDA!        \n\n";
+    text += `Password WiFi: ${wifiPass}\n`;
+    text += "================================\n\n\n"; // Padding potong kertas
+
+    // Kirim satu set paket utuh ke React Native via WebView Bridge
+    window.ReactNativeWebView.postMessage(JSON.stringify({
+        event: 'PRINT_RECEIPT_BATCH',
+        payload: {
+            textCommands: text,
+            bitmapBase64: logoBase64
+        }
+    }));
+}
+
+// Contoh pemanggilan fungsi saat tombol "Cetak Struk" di web ditekan:
+function triggerPrintButton() {
+    const sampleItems = [
+        { name: "Kopi Susu Gula Aren", qty: 2, price: 18000 },
+        { name: "French Fries", qty: 1, price: 15000 },
+        { name: "Ice Lychee Tea", qty: 1, price: 20000 }
+    ];
+    
+    handlePrintOrder(sampleItems, "A088", "NgopiDulu123");
+}
+
+function requestSelectBluetoothPrinter() {
+    window.ReactNativeWebView.postMessage(JSON.stringify({
+        event: 'REQUEST_SELECT_PRINTER'
+    }));
+}
+
+// Opsional: Fungsi callback di web untuk mendengarkan jika printer berhasil terhubung
+window.onPrinterConnected = function(printerInfo) {
+    console.log("Printer terpilih:", printerInfo.name, printerInfo.address);
+    alert("Printer " + printerInfo.name + " berhasil dihubungkan!");
+};
 </script>
 </body>
 </html>
