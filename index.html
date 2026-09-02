@@ -329,7 +329,6 @@
     }
 
     function handlePrintOrder(selectedItems, orderNumber, wifiPassword) {
-    // 1. Buat elemen gambar logo (misal dari URL asset logo kafe Anda)
     const logoImg = new Image();
     logoImg.crossOrigin = "Anonymous";
     logoImg.src = "https://anchatopia.github.io/echo-pos/images/eppos.png";
@@ -358,8 +357,8 @@ function executeBridgePrint(items, orderNo, wifiPass, logoBase64) {
     
     // Perintah format teks ESC/POS sederhana menggunakan spasi/baris baru (\n)
     let text = "";
-    text += "       ECHO COFFEE SHOP       \n";
-    text += "   Jl. Malioboro No. 123, Jogja  \n";
+    text += "   Samparan RT 04, Caturharjo  \n";
+    text += " Pandak, Bantul, DI Yogyakarta  \n";
     text += "--------------------------------\n";
     text += `No. Pesanan : #${orderNo}\n`;
     text += `Tanggal     : ${dateStr}\n`;
@@ -379,8 +378,8 @@ function executeBridgePrint(items, orderNo, wifiPass, logoBase64) {
     text += "--------------------------------\n";
     text += `GRAND TOTAL : Rp ${grandTotal.toLocaleString()}\n`;
     text += "--------------------------------\n";
-    text += "     TERIMA KASIH ATAS      \n";
-    text += "     KUNJUNGAN ANDA!        \n\n";
+    text += "       TERIMA KASIH ATAS      \n";
+    text += "       KUNJUNGAN ANDA!        \n\n";
     text += `Password WiFi: ${wifiPass}\n`;
     text += "================================\n\n\n"; // Padding potong kertas
 
@@ -396,12 +395,12 @@ function executeBridgePrint(items, orderNo, wifiPass, logoBase64) {
 
 function triggerPrintButton() {
     const sampleItems = [
-        { name: "Kopi Susu Gula Aren", qty: 2, price: 18000 },
+        { name: "Kopi Susu Gula Aren", qty: 2, price: 24000 },
         { name: "French Fries", qty: 1, price: 15000 },
         { name: "Ice Lychee Tea", qty: 1, price: 20000 }
     ];
     
-    handlePrintOrder(sampleItems, "A088", "NgopiDulu123");
+    handlePrintOrder(sampleItems, "A088", "echaecho");
 }
 
 function requestSelectBluetoothPrinter() {
@@ -411,7 +410,7 @@ function requestSelectBluetoothPrinter() {
 }
 
 window.onPrinterConnected = function(printerInfo) {
-    console.log("Printer terpilih:", printerInfo.name, printerInfo.address);
+    //console.log("Printer terpilih:", printerInfo.name, printerInfo.address);
     alert("Printer " + printerInfo.name + " berhasil dihubungkan!");
 };
 </script>
