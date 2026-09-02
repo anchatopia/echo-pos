@@ -139,10 +139,7 @@
             </div>
         </div>
     </div>
-
-    <!-- JAVASCRIPT -->
    <script>
-    // 1. Array produk disesuaikan dengan nama icon Lucide resmi
     const products = [
         { id: 1, name: "Espresso Double Shot", price: 18000, category: "minuman", icon: "cup-soda" },
         { id: 2, name: "Premium Cafe Latte", price: 26000, category: "minuman", icon: "coffee" },
@@ -216,6 +213,7 @@
                 return;
             }
             alert('Transaksi Berhasil! Struk pesanan sedang dicetak.');
+            triggerPrintButton()
             cart = [];
             updateCart();
         });
@@ -396,7 +394,6 @@ function executeBridgePrint(items, orderNo, wifiPass, logoBase64) {
     }));
 }
 
-// Contoh pemanggilan fungsi saat tombol "Cetak Struk" di web ditekan:
 function triggerPrintButton() {
     const sampleItems = [
         { name: "Kopi Susu Gula Aren", qty: 2, price: 18000 },
@@ -413,7 +410,6 @@ function requestSelectBluetoothPrinter() {
     }));
 }
 
-// Opsional: Fungsi callback di web untuk mendengarkan jika printer berhasil terhubung
 window.onPrinterConnected = function(printerInfo) {
     console.log("Printer terpilih:", printerInfo.name, printerInfo.address);
     alert("Printer " + printerInfo.name + " berhasil dihubungkan!");
