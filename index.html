@@ -2,10 +2,27 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=https://tes.pacitanapp.my.id/echopos/">
     <title>Redirecting...</title>
+    <script>
+        // Target URL dasar
+        const baseUrl = "https://tes.pacitanapp.my.id/echopos/index.html";
+        
+        // Buat kode acak berbasis timestamp saat ini
+        const randomCode = Date.now(); 
+        
+        // Gabungkan menjadi URL baru
+        const targetUrl = `${baseUrl}?v=${randomCode}`;
+        
+        // Jalankan redirect langsung secara otomatis
+        window.location.replace(targetUrl);
+    </script>
 </head>
 <body>
-    <p>Jika halaman tidak berpindah secara otomatis, <a href="https://tes.pacitanapp.my.id/echopos/">klik di sini</a>.</p>
+    <p>Jika halaman tidak berpindah secara otomatis, <a id="redirect-link" href="#">klik di sini</a>.</p>
+
+    <script>
+        // Update link fallback untuk pengguna jika JS melambat
+        document.getElementById("redirect-link").href = targetUrl;
+    </script>
 </body>
 </html>
